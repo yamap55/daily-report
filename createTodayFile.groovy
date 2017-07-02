@@ -12,6 +12,11 @@ def year = m[0][1]
 def month = m[0][2]
 def day = m[0][3]
 
-def newFilePath = "${p}${year}/${year}${month}/${year}${month}${day}.md"
+def dir = "${p}${year}/${year}${month}/"
+if (!new File(dir).exists()) {
+  new File(dir).mkdirs()
+}
+
+def newFilePath = "${dir}/${year}${month}${day}.md"
 new File(newFilePath) << new File("${p}${template}").text
 println "create new file : ${newFilePath}"
