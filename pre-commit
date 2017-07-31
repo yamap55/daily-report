@@ -1,0 +1,22 @@
+#!/bin/sh
+branch=`git branch | grep "*" | awk '{print $2}'`
+
+if [[ ! "$branch" =~ ^[0-9]{8}$ ]]; then
+	# ブランチ名が数字8桁でない場合にはスルー。
+	exit 0
+fi
+
+# 変更ファイル取得
+lines=`git status -s | sed "s/.* //"`
+while read line
+do
+	count=`diff $line template.md | wc -l`
+	if [ $count = 0 ]; then
+		# template.mdと差分がなかった場合には異常と判定する。
+		echo "$line がtemplate.md から変更されていないようです。"
+		exit 1
+	fi
+done << END
+$lines
+END
+
