@@ -18,5 +18,7 @@ if (!new File(dir).exists()) {
 }
 
 def newFilePath = "${dir}/${year}${month}${day}.md"
-new File(newFilePath) << new File("${p}${template}").text
+
+new File(newFilePath).write(new File("${p}${template}").getText("UTF-8"),"UTF-8")
+
 println "create new file : ${newFilePath}"
