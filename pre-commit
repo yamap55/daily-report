@@ -10,6 +10,9 @@ fi
 lines=`git status -s | sed "s/.* //"`
 while read line
 do
+	if [ "$line" = "" ]; then
+		continue
+	fi
 	count=`diff $line template.md | wc -l`
 	if [ $count = 0 ]; then
 		# template.mdと差分がなかった場合には異常と判定する。
@@ -19,4 +22,3 @@ do
 done << END
 $lines
 END
-
