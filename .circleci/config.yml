@@ -1,0 +1,30 @@
+version: 2
+
+jobs:
+  remove_merged_branches:
+    working_directory: ~/app
+    docker:
+      - image: circleci/ruby # gitが入っていればなんでもいい
+
+    steps:
+      - checkout
+
+      - run:
+          name: Remove merged remote branches
+          command: git branch -r --merged origin/master | grep -v -e origin/master -e upstream/master | sed -e 's% *origin/%%' | xargs --no-run-if-empty -I% git push --delete origin %
+          # デフォルトの/bin/bash -eo pipefailだとマージ済ブランチが1つもない場合にgrepでexit 1されてジョブが失敗するので上書きする
+          shell: /bin/bash
+
+workflows:
+  version: 2
+
+  daily_branch_cleaner:
+    triggers:
+      - schedule:
+          # NOTE: CircleCIはUTCで動いてるのでJSTにしたければ-9時間した時間を書く
+          cron: "05 15 * * *" # JST 00:05
+          filters:
+            branches:
+              only: develop
+    jobs:
+      - remove_merged_branches
