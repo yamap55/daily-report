@@ -25,6 +25,6 @@ workflows:
           cron: "05 15 * * *" # JST 00:05
           filters:
             branches:
-              only: develop
+              only: master
     jobs:
       - remove_merged_branches
